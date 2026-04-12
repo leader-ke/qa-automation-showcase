@@ -6,20 +6,26 @@
   "scripts": {
     "test": "playwright test",
     "test:api": "playwright test --project=api",
-    "test:web": "playwright test --project=web",
+    "test:web:playwright": "playwright test --project=web-playwright",
+    "test:web:cypress": "cypress run",
+    "test:unit": "jest",
     "test:report": "playwright show-report"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kennedyIsiaho/qa-automation-showcase.git"
+    "url": "git+https://github.com/leader-ke/qa-automation-showcase.git"
   },
   "bugs": {
-    "url": "https://github.com/kennedyIsiaho/qa-automation-showcase/issues"
+    "url": "https://github.com/leader-ke/qa-automation-showcase/issues"
   },
-  "homepage": "https://github.com/kennedyIsiaho/qa-automation-showcase#readme",
+  "homepage": "https://github.com/leader-ke/qa-automation-showcase#readme",
   "devDependencies": {
     "@playwright/test": "^1.59.1",
+    "@types/jest": "^30.0.0",
     "@types/node": "^25.6.0",
+    "cypress": "^15.13.1",
+    "jest": "^30.3.0",
+    "ts-jest": "^29.4.9",
     "typescript": "^6.0.2"
   }
 }

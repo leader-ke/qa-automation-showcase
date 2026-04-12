@@ -7,7 +7,7 @@
  */
 import { test, expect } from '@playwright/test';
 import { TodoPage } from '../pages/TodoPage';
-import { singleTodo } from '../../fixtures/todos';
+import { singleTodo } from '../../../fixtures/todos';
 
 test.describe('Todo — edge cases', () => {
   let todoPage: TodoPage;

@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: '.',
-  testMatch: ['api/tests/**/*.spec.ts', 'web/tests/**/*.spec.ts'],
+  testMatch: ['api/tests/**/*.spec.ts', 'web/playwright/tests/**/*.spec.ts'],
   fullyParallel: true,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 2 : undefined,
@@ -22,8 +22,8 @@ export default defineConfig({
       testMatch: 'api/tests/**/*.spec.ts',
     },
     {
-      name: 'web',
-      testMatch: 'web/tests/**/*.spec.ts',
+      name: 'web-playwright',
+      testMatch: 'web/playwright/tests/**/*.spec.ts',
       use: { ...devices['Desktop Chrome'] },
     },
   ],

@@ -7,7 +7,7 @@
  */
 import { test, expect } from '@playwright/test';
 import { TodoPage } from '../pages/TodoPage';
-import { todoItems } from '../../fixtures/todos';
+import { todoItems } from '../../../fixtures/todos';
 
 test.describe('Todo — keyboard navigation', () => {
   let todoPage: TodoPage;

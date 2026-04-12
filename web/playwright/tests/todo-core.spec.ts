@@ -10,7 +10,7 @@
  */
 import { test, expect } from '@playwright/test';
 import { TodoPage } from '../pages/TodoPage';
-import { todoItems, singleTodo } from '../../fixtures/todos';
+import { todoItems, singleTodo } from '../../../fixtures/todos';
 
 test.describe('Todo — core user journeys', () => {
   let todoPage: TodoPage;
