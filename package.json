@@ -1,0 +1,25 @@
+{
+  "name": "qa-automation-showcase",
+  "version": "1.0.0",
+  "description": "QA automation showcase: API and Web UI tests using Playwright + TypeScript",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:api": "playwright test --project=api",
+    "test:web": "playwright test --project=web",
+    "test:report": "playwright show-report"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kennedyIsiaho/qa-automation-showcase.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kennedyIsiaho/qa-automation-showcase/issues"
+  },
+  "homepage": "https://github.com/kennedyIsiaho/qa-automation-showcase#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.6.0",
+    "typescript": "^6.0.2"
+  }
+}
