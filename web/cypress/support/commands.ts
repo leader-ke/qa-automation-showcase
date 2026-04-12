@@ -21,6 +21,8 @@ Cypress.Commands.add('deleteTodo', (text: string) => {
     });
 });
 
+export {};
+
 declare global {
   namespace Cypress {
     interface Chainable {

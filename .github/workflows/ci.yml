@@ -7,6 +7,23 @@ on:
     branches: [main]
 
 jobs:
+  lint:
+    name: Lint (TypeScript)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check
+        run: npx tsc --noEmit
+
   playwright:
     name: Playwright (API + Web UI)
     runs-on: ubuntu-latest
@@ -79,3 +96,18 @@ jobs:
 
       - name: Run unit tests
         run: npm run test:unit
+
+  performance:
+    name: Performance (k6)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Run smoke test
+        run: k6 run performance/tests/smoke-test.js
+
+      - name: Run load test
+        run: k6 run performance/tests/load-test.js
