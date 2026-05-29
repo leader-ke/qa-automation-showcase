@@ -26,9 +26,9 @@ export const options = {
     { duration: '10s', target: 0 },
   ],
   thresholds: {
-    http_req_duration: ['p(95)<500'],   // 95% of requests under 500ms
-    http_req_failed: ['rate<0.01'],     // less than 1% failure rate
-    errors: ['rate<0.05'],              // less than 5% check failures
+    http_req_duration: ['p(95)<500'], // 95% of requests under 500ms
+    http_req_failed: ['rate<0.01'], // less than 1% failure rate
+    errors: ['rate<0.05'], // less than 5% check failures
     post_list_duration: ['p(99)<1000'], // 99th percentile under 1s
   },
 };
