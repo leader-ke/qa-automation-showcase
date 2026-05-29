@@ -1,0 +1,27 @@
+{
+  "$schema": "https://stryker-mutator.io/schemas/stryker-schema.json",
+
+  "testRunner": "jest",
+  "jest": {
+    "configFile": "jest.config.js",
+    "enableFindRelatedTests": true
+  },
+
+  "mutate": ["unit/utils/testResultsParser.ts"],
+
+  "coverageAnalysis": "perTest",
+
+  "reporters": ["html", "progress"],
+  "htmlReporter": {
+    "fileName": "mutation-report/index.html"
+  },
+
+  "thresholds": {
+    "high": 80,
+    "low": 60,
+    "break": 50
+  },
+
+  "timeoutMS": 10000,
+  "concurrency": 2
+}

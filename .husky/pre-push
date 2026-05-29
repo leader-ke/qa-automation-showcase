@@ -1,0 +1,26 @@
+#!/bin/sh
+# Pre-push hook: fast local gate before code hits CI
+#
+# Runs type check + smoke tests.
+# - Type check catches TypeScript errors without running tests
+# - Smoke tests verify the critical path is alive before pushing
+#
+# To skip in exceptional cases (e.g. pushing a WIP branch):
+#   git push --no-verify
+#
+# This mirrors the first two tiers of the CI pipeline — fail fast locally
+# before waiting minutes for CI to report the same problem.
+
+echo "Running pre-push checks..."
+
+npx tsc --noEmit || {
+  echo "TypeScript type check failed. Fix type errors before pushing."
+  exit 1
+}
+
+npm run test:smoke || {
+  echo "Smoke tests failed. The critical path is broken — don't push until it's fixed."
+  exit 1
+}
+
+echo "Pre-push checks passed."

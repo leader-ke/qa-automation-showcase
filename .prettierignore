@@ -1,0 +1,6 @@
+node_modules/
+playwright-report/
+mutation-report/
+test-results/
+web/playwright/visual-baselines/
+package-lock.json

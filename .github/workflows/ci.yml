@@ -182,8 +182,22 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install chromium --with-deps
 
+      # --update-snapshots=missing: create baselines that don't exist yet,
+      # compare against ones that do. On first run for a new platform (Linux),
+      # this writes baselines and the job passes. Once those baselines are
+      # committed, subsequent runs compare against them and catch regressions.
       - name: Run visual regression tests
-        run: npm run test:visual
+        run: npx playwright test --project=visual --update-snapshots=missing
+
+      # Always upload baselines so they can be downloaded and committed
+      # after the first CI run on a new platform.
+      - name: Upload visual baselines
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-baselines-linux
+          path: web/playwright/visual-baselines/
+          retention-days: 30
 
       - name: Upload visual diff artifacts
         uses: actions/upload-artifact@v4
