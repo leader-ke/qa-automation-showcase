@@ -9,7 +9,7 @@ import { test, expect } from '@playwright/test';
 import { TodoPage } from '../pages/TodoPage';
 import { todoItems } from '../../../fixtures/todos';
 
-test.describe('Todo — persistence', () => {
+test.describe('Todo — persistence', { tag: ['@regression'] }, () => {
   let todoPage: TodoPage;
 
   test.beforeEach(async ({ page }) => {
@@ -18,7 +18,7 @@ test.describe('Todo — persistence', () => {
   });
 
   test('todos persist after page reload', async ({ page }) => {
-    const texts = todoItems.slice(0, 3).map(t => t.text);
+    const texts = todoItems.slice(0, 3).map((t) => t.text);
     await todoPage.addTodos(texts);
 
     await page.reload();
@@ -35,9 +35,7 @@ test.describe('Todo — persistence', () => {
 
     await page.reload();
 
-    const item = page
-      .getByTestId('todo-item')
-      .filter({ hasText: todoItems[0].text });
+    const item = page.getByTestId('todo-item').filter({ hasText: todoItems[0].text });
     await expect(item).toHaveClass(/completed/);
   });
 

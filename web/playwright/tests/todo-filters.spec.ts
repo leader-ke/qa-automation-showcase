@@ -4,11 +4,11 @@
  * Filtering is a distinct sub-journey with its own risk surface —
  * kept in a separate spec to isolate failures and keep each file focused.
  */
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 import { TodoPage } from '../pages/TodoPage';
 import { todoItems } from '../../../fixtures/todos';
 
-test.describe('Todo — filters', () => {
+test.describe('Todo — filters', { tag: ['@regression'] }, () => {
   let todoPage: TodoPage;
 
   test.beforeEach(async ({ page }) => {
@@ -27,8 +27,8 @@ test.describe('Todo — filters', () => {
   test('"Active" filter shows only incomplete items', async () => {
     await todoPage.filterBy('Active');
 
-    const incomplete = todoItems.filter(t => !t.completed);
-    const completed = todoItems.filter(t => t.completed);
+    const incomplete = todoItems.filter((t) => !t.completed);
+    const completed = todoItems.filter((t) => t.completed);
 
     for (const item of incomplete) {
       await todoPage.expectTodoVisible(item.text);
@@ -41,8 +41,8 @@ test.describe('Todo — filters', () => {
   test('"Completed" filter shows only completed items', async () => {
     await todoPage.filterBy('Completed');
 
-    const incomplete = todoItems.filter(t => !t.completed);
-    const completed = todoItems.filter(t => t.completed);
+    const incomplete = todoItems.filter((t) => !t.completed);
+    const completed = todoItems.filter((t) => t.completed);
 
     for (const item of completed) {
       await todoPage.expectTodoVisible(item.text);
@@ -61,10 +61,10 @@ test.describe('Todo — filters', () => {
   test('"Clear completed" removes completed items', async () => {
     await todoPage.clearCompletedButton.click();
 
-    const remaining = todoItems.filter(t => !t.completed);
+    const remaining = todoItems.filter((t) => !t.completed);
     await todoPage.expectTodoCount(remaining.length);
 
-    for (const item of todoItems.filter(t => t.completed)) {
+    for (const item of todoItems.filter((t) => t.completed)) {
       await todoPage.expectTodoNotVisible(item.text);
     }
   });

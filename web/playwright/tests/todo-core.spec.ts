@@ -12,7 +12,7 @@ import { test, expect } from '@playwright/test';
 import { TodoPage } from '../pages/TodoPage';
 import { todoItems, singleTodo } from '../../../fixtures/todos';
 
-test.describe('Todo — core user journeys', () => {
+test.describe('Todo — core user journeys', { tag: ['@regression'] }, () => {
   let todoPage: TodoPage;
 
   test.beforeEach(async ({ page }) => {
@@ -20,7 +20,7 @@ test.describe('Todo — core user journeys', () => {
     await todoPage.goto();
   });
 
-  test('user can add a todo item', async () => {
+  test('user can add a todo item', { tag: '@smoke' }, async () => {
     await todoPage.addTodo(singleTodo.text);
 
     await todoPage.expectTodoCount(1);
@@ -28,19 +28,17 @@ test.describe('Todo — core user journeys', () => {
   });
 
   test('user can add multiple todo items', async () => {
-    const texts = todoItems.map(t => t.text);
+    const texts = todoItems.map((t) => t.text);
     await todoPage.addTodos(texts);
 
     await todoPage.expectTodoCount(texts.length);
   });
 
-  test('user can complete a todo item', async () => {
+  test('user can complete a todo item', { tag: '@smoke' }, async () => {
     await todoPage.addTodo(singleTodo.text);
     await todoPage.completeTodo(singleTodo.text);
 
-    const item = todoPage.page
-      .getByTestId('todo-item')
-      .filter({ hasText: singleTodo.text });
+    const item = todoPage.page.getByTestId('todo-item').filter({ hasText: singleTodo.text });
     await expect(item).toHaveClass(/completed/);
   });
 
@@ -61,7 +59,7 @@ test.describe('Todo — core user journeys', () => {
   });
 
   test('active count decrements when a todo is completed', async () => {
-    const texts = todoItems.slice(0, 3).map(t => t.text);
+    const texts = todoItems.slice(0, 3).map((t) => t.text);
     await todoPage.addTodos(texts);
     await todoPage.expectActiveCount(3);
 

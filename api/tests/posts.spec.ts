@@ -10,9 +10,9 @@ import { validNewPost } from '../../fixtures/users';
 
 const BASE_URL = 'https://jsonplaceholder.typicode.com';
 
-test.describe('Posts API', () => {
+test.describe('Posts API', { tag: ['@regression'] }, () => {
   test.describe('GET /posts', () => {
-    test('returns 200 with a non-empty list', async ({ request }) => {
+    test('returns 200 with a non-empty list', { tag: '@smoke' }, async ({ request }) => {
       const response = await request.get(`${BASE_URL}/posts`);
 
       expect(response.status()).toBe(200);

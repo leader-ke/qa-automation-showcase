@@ -9,7 +9,7 @@ import { test, expect } from '@playwright/test';
 import { TodoPage } from '../pages/TodoPage';
 import { singleTodo } from '../../../fixtures/todos';
 
-test.describe('Todo — edge cases', () => {
+test.describe('Todo — edge cases', { tag: ['@regression'] }, () => {
   let todoPage: TodoPage;
 
   test.beforeEach(async ({ page }) => {

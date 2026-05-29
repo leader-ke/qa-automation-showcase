@@ -49,11 +49,19 @@ export function summariseResults(results: TestResult[]): TestSummary {
   );
 
   const actionable = results.filter((r) => r.status !== 'skipped');
-  const passRate = actionable.length > 0
-    ? Math.round(((passed + flaky) / actionable.length) * 100)
-    : 0;
+  const passRate =
+    actionable.length > 0 ? Math.round(((passed + flaky) / actionable.length) * 100) : 0;
 
-  return { total: results.length, passed, failed, skipped, flaky, passRate, totalDuration, slowestTest };
+  return {
+    total: results.length,
+    passed,
+    failed,
+    skipped,
+    flaky,
+    passRate,
+    totalDuration,
+    slowestTest,
+  };
 }
 
 export function filterByStatus(results: TestResult[], status: TestStatus): TestResult[] {
@@ -72,4 +80,42 @@ export function categoriseByDuration(
     fast: results.filter((r) => r.duration < slowThresholdMs),
     slow: results.filter((r) => r.duration >= slowThresholdMs),
   };
+}
+
+/**
+ * Identifies tests that passed only after retrying — these are flaky
+ * candidates that warrant investigation. A test with retries > 0 that
+ * ultimately passed is masking an intermittent problem.
+ */
+export function detectFlakyTests(results: TestResult[]): TestResult[] {
+  return results.filter((r) => r.status === 'flaky' || (r.retries !== undefined && r.retries > 0));
+}
+
+export interface RegressionReport {
+  newFailures: number;
+  resolvedFailures: number;
+  passRateDelta: number;
+  isRegression: boolean;
+}
+
+/**
+ * Compares two test summaries — useful for tracking trends across CI runs.
+ * A CI pipeline can emit a regression report to flag when a PR degrades
+ * the test suite even if it doesn't go red.
+ *
+ * `isRegression` is true when:
+ * - The number of failures increased, OR
+ * - The pass rate dropped by more than `passRateTolerancePct`
+ */
+export function computeRegressionReport(
+  previous: TestSummary,
+  current: TestSummary,
+  passRateTolerancePct = 2
+): RegressionReport {
+  const newFailures = Math.max(0, current.failed - previous.failed);
+  const resolvedFailures = Math.max(0, previous.failed - current.failed);
+  const passRateDelta = current.passRate - previous.passRate;
+  const isRegression = newFailures > 0 || passRateDelta < -passRateTolerancePct;
+
+  return { newFailures, resolvedFailures, passRateDelta, isRegression };
 }

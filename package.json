@@ -1,15 +1,35 @@
 {
   "name": "qa-automation-showcase",
   "version": "1.0.0",
-  "description": "QA automation showcase: API and Web UI tests using Playwright + TypeScript",
+  "description": "QA automation showcase: layered test strategy across API, Web UI, accessibility, visual regression, performance, and mutation testing",
   "private": true,
   "scripts": {
     "test": "playwright test",
     "test:api": "playwright test --project=api",
     "test:web:playwright": "playwright test --project=web-playwright",
     "test:web:cypress": "cypress run",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:regression": "playwright test --grep @regression",
+    "test:a11y": "playwright test --grep @a11y",
+    "test:visual": "playwright test --project=visual",
+    "test:visual:update": "playwright test --project=visual --update-snapshots",
     "test:unit": "jest",
-    "test:report": "playwright show-report"
+    "test:mutation": "stryker run",
+    "test:report": "playwright show-report",
+    "prepare": "husky",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,js}": [
+      "prettier --write"
+    ]
   },
   "repository": {
     "type": "git",
@@ -20,12 +40,22 @@
   },
   "homepage": "https://github.com/leader-ke/qa-automation-showcase#readme",
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.3",
     "@playwright/test": "^1.59.1",
+    "@stryker-mutator/core": "^9.6.1",
+    "@stryker-mutator/jest-runner": "^9.6.1",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.6.0",
     "cypress": "^15.13.1",
+    "eslint": "^10.4.0",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
     "jest": "^30.3.0",
+    "lint-staged": "^17.0.5",
+    "prettier": "^3.8.3",
     "ts-jest": "^29.4.9",
-    "typescript": "^6.0.2"
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.60.0",
+    "zod": "^4.4.3"
   }
 }

@@ -7,6 +7,10 @@ on:
     branches: [main]
 
 jobs:
+  # ─────────────────────────────────────────────────────────────────────────
+  # Tier 1: Fast gates — run on every push, block the rest if they fail
+  # ─────────────────────────────────────────────────────────────────────────
+
   lint:
     name: Lint (TypeScript)
     runs-on: ubuntu-latest
@@ -24,9 +28,59 @@ jobs:
       - name: Type-check
         run: npx tsc --noEmit
 
+      - name: Lint
+        run: npx eslint .
+
+      - name: Format check
+        run: npx prettier --check .
+
+  unit:
+    name: Unit tests (Jest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm run test:unit
+
+  smoke:
+    name: Smoke tests (fast gate)
+    runs-on: ubuntu-latest
+    # Smoke tests are the canary — if critical paths are broken there's no
+    # value running the full regression suite. All other test jobs need this.
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Run smoke tests
+        run: npm run test:smoke
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Tier 2: Full regression — runs after smoke passes
+  # ─────────────────────────────────────────────────────────────────────────
+
   playwright:
     name: Playwright (API + Web UI)
     runs-on: ubuntu-latest
+    needs: smoke
     steps:
       - uses: actions/checkout@v4
 
@@ -58,6 +112,7 @@ jobs:
   cypress:
     name: Cypress (Web UI)
     runs-on: ubuntu-latest
+    needs: smoke
     steps:
       - uses: actions/checkout@v4
 
@@ -80,9 +135,10 @@ jobs:
           path: cypress/screenshots/
           retention-days: 7
 
-  unit:
-    name: Unit tests (Jest)
+  accessibility:
+    name: Accessibility (axe + keyboard)
     runs-on: ubuntu-latest
+    needs: smoke
     steps:
       - uses: actions/checkout@v4
 
@@ -94,19 +150,92 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run unit tests
-        run: npm run test:unit
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Run accessibility tests
+        run: npm run test:a11y
+
+      - name: Upload accessibility report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: accessibility-report
+          path: playwright-report/
+          retention-days: 14
+
+  visual:
+    name: Visual regression
+    runs-on: ubuntu-latest
+    needs: smoke
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Run visual regression tests
+        run: npm run test:visual
+
+      - name: Upload visual diff artifacts
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: visual-diffs
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 14
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Tier 3: Deeper analysis — slower, highest signal-to-noise
+  # ─────────────────────────────────────────────────────────────────────────
+
+  mutation:
+    name: Mutation testing (Stryker)
+    runs-on: ubuntu-latest
+    needs: unit
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run mutation tests
+        run: npm run test:mutation
+
+      - name: Upload mutation report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mutation-report
+          path: mutation-report/
+          retention-days: 14
 
   performance:
     name: Performance (k6)
     runs-on: ubuntu-latest
+    needs: smoke
     steps:
       - uses: actions/checkout@v4
 
       - name: Install k6
         uses: grafana/setup-k6-action@v1
 
-      - name: Run smoke test
+      - name: Run smoke test (validates system is up before load)
         run: k6 run performance/tests/smoke-test.js
 
       - name: Run load test

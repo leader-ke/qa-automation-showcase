@@ -7,11 +7,10 @@
  * in the response body.
  */
 import { test, expect } from '@playwright/test';
-import { validNewPost } from '../../fixtures/users';
 
 const BASE_URL = 'https://jsonplaceholder.typicode.com';
 
-test.describe('Posts API — mutations', () => {
+test.describe('Posts API — mutations', { tag: ['@regression'] }, () => {
   test.describe('PUT /posts/:id', () => {
     test('replaces a post and returns 200 with the full updated resource', async ({ request }) => {
       const updated = { id: 1, title: 'Replaced title', body: 'Replaced body', userId: 1 };

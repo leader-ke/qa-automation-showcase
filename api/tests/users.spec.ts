@@ -13,9 +13,9 @@ import { knownUsers } from '../../fixtures/users';
 
 const BASE_URL = 'https://jsonplaceholder.typicode.com';
 
-test.describe('Users API', () => {
+test.describe('Users API', { tag: ['@regression'] }, () => {
   test.describe('GET /users', () => {
-    test('returns 200 with an array of users', async ({ request }) => {
+    test('returns 200 with an array of users', { tag: '@smoke' }, async ({ request }) => {
       const response = await request.get(`${BASE_URL}/users`);
 
       expect(response.status()).toBe(200);

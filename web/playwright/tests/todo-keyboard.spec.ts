@@ -9,7 +9,7 @@ import { test, expect } from '@playwright/test';
 import { TodoPage } from '../pages/TodoPage';
 import { todoItems } from '../../../fixtures/todos';
 
-test.describe('Todo — keyboard navigation', () => {
+test.describe('Todo — keyboard navigation', { tag: ['@regression', '@a11y'] }, () => {
   let todoPage: TodoPage;
 
   test.beforeEach(async ({ page }) => {
@@ -59,8 +59,8 @@ test.describe('Todo — keyboard navigation', () => {
     await checkbox.focus();
     await page.keyboard.press('Space');
 
-    await expect(
-      page.getByTestId('todo-item').filter({ hasText: todoItems[0].text })
-    ).toHaveClass(/completed/);
+    await expect(page.getByTestId('todo-item').filter({ hasText: todoItems[0].text })).toHaveClass(
+      /completed/
+    );
   });
 });

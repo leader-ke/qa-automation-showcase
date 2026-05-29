@@ -10,9 +10,9 @@ import { newTodo, completedTodo } from '../../fixtures/todos-api';
 
 const BASE_URL = 'https://jsonplaceholder.typicode.com';
 
-test.describe('Todos API', () => {
+test.describe('Todos API', { tag: ['@regression'] }, () => {
   test.describe('GET /todos', () => {
-    test('returns 200 with a non-empty list', async ({ request }) => {
+    test('returns 200 with a non-empty list', { tag: '@smoke' }, async ({ request }) => {
       const response = await request.get(`${BASE_URL}/todos`);
 
       expect(response.status()).toBe(200);
