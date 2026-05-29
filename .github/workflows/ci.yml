@@ -182,15 +182,33 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install chromium --with-deps
 
-      # --update-snapshots=missing: create baselines that don't exist yet,
-      # compare against ones that do. On first run for a new platform (Linux),
-      # this writes baselines and the job passes. Once those baselines are
-      # committed, subsequent runs compare against them and catch regressions.
-      - name: Run visual regression tests
-        run: npx playwright test --project=visual --update-snapshots=missing
+      # Detect whether Linux baselines have been committed yet.
+      # On first CI run there are only macOS baselines (-darwin.png).
+      # Once a developer downloads the artifact from this job and commits
+      # the -linux.png files, subsequent runs switch to regression mode.
+      - name: Check for committed Linux baselines
+        id: baselines
+        run: |
+          if find web/playwright/visual-baselines -name "*-linux.png" -print -quit | grep -q .; then
+            echo "exist=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exist=false" >> "$GITHUB_OUTPUT"
+          fi
 
-      # Always upload baselines so they can be downloaded and committed
-      # after the first CI run on a new platform.
+      # No baselines yet: generate them and always pass.
+      # Download the uploaded artifact, commit the -linux.png files, and
+      # the next CI run will switch to regression detection automatically.
+      - name: Generate Linux baselines (first run)
+        if: steps.baselines.outputs.exist == 'false'
+        run: npx playwright test --project=visual --update-snapshots
+
+      # Baselines committed: compare and fail on any visual regression.
+      - name: Run visual regression tests
+        if: steps.baselines.outputs.exist == 'true'
+        run: npx playwright test --project=visual
+
+      # Always upload so baselines can be downloaded and committed after
+      # the first run, and so diffs are available when regressions are caught.
       - name: Upload visual baselines
         uses: actions/upload-artifact@v4
         if: always()
@@ -199,7 +217,7 @@ jobs:
           path: web/playwright/visual-baselines/
           retention-days: 30
 
-      - name: Upload visual diff artifacts
+      - name: Upload visual diff report
         uses: actions/upload-artifact@v4
         if: failure()
         with:
