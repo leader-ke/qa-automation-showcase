@@ -277,3 +277,7 @@ Artifacts uploaded on every run:
 | Full visual baseline set                       | Environment-dependent; generate locally with `npm run test:visual:update` |
 
 See [`docs/testing-strategy.md`](docs/testing-strategy.md) for the full rationale.
+
+## Agent Testing
+
+This PR tests the Pemystack Regressor and Greenlight agents.
