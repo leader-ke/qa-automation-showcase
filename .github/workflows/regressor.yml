@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pemystack/regressor-action@930e27b13f95d0cfce19ca7829b6e502801aa880
+      - uses: pemystack/regressor-action@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           gemini_api_key: ${{ secrets.GEMINI_API_KEY }}

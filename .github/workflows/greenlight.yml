@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pemystack/greenlight-action@eaa25e2f3eb3b33ae5af5e3fee16a0c0a189630f
+      - uses: pemystack/greenlight-action@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
