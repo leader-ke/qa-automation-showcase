@@ -4,3 +4,6 @@ mutation-report/
 test-results/
 web/playwright/visual-baselines/
 package-lock.json
+.packmind/
+packmind-lock.json
+AGENTS.md
