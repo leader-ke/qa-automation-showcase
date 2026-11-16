@@ -53,7 +53,7 @@ jobs:
 
   smoke:
     name: Smoke tests (fast gate)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Smoke tests are the canary — if critical paths are broken there's no
     # value running the full regression suite. All other test jobs need this.
     steps:
@@ -79,7 +79,7 @@ jobs:
 
   playwright:
     name: Playwright (API + Web UI)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: smoke
     steps:
       - uses: actions/checkout@v7
@@ -137,7 +137,7 @@ jobs:
 
   accessibility:
     name: Accessibility (axe + keyboard)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: smoke
     steps:
       - uses: actions/checkout@v7
@@ -166,7 +166,7 @@ jobs:
 
   visual:
     name: Visual regression
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: smoke
     steps:
       - uses: actions/checkout@v7
